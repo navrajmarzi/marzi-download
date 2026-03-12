@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const groupPng = "/group_of_people.webp";
 
@@ -58,14 +59,14 @@ export default function Hero() {
             <p className="text-sm text-gray-600 font-semibold rounded-full w-max px-1 ml-2">
               ⭐ 4.8 · 50K+ members
             </p>
-            <a
+            <Link
               href="https://play.google.com/store/apps/details?id=marzi.app&hl=en_IN"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-primary text-white text-base sm:text-lg px-8 py-4 sm:px-10 sm:py-5 rounded-full font-semibold hover:bg-primary/90 transition-colors"
+              className="inline-block bg-primary text-white text-base  sm:text-lg px-8 py-4 sm:px-10 sm:py-5 rounded-full font-semibold hover:bg-primary/90 transition-colors"
             >
               Download on Play Store
-            </a>
+            </Link>
           
           </div>
         </motion.div>
@@ -75,7 +76,7 @@ export default function Hero() {
           <img
             src={groupPng}
             alt="Happy seniors enjoying life together"
-            className="w-full h-full object-contain object-bottom z-20 absolute bottom-0 md:relative"
+            className="w-full h-full object-contain object-bottom z-20 absolute bottom-0 md:relative pointer-events-none md:pointer-events-auto"
           />
           <p className="hidden md:block max-w-2xl text-lg text-white leading-relaxed mt-14 font-bold rounded-2xl p-4">
             Meet people who still remember the lyrics, the voices, and the magic
