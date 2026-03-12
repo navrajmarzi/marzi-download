@@ -21,7 +21,7 @@ export default function Navbar() {
         <nav className="flex items-center gap-8">
     
           <a
-            href="https://marzi.app/download"
+            href="https://play.google.com/store/apps/details?id=marzi.app&hl=en_IN"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-bold text-primary hover:bg-primary hover:text-white transition-colors border border-primary px-4 py-2 rounded-full"

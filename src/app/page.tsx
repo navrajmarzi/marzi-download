@@ -5,7 +5,7 @@ import PhotoFan from "@/components/PhotoFan";
 import WhatIsMarzi from "@/components/WhatIsMarzi";
 import Testimonials from "@/components/Testimonials";
 import CtaBanner from "@/components/CtaBanner";
-import LandingFooter from "@/components/LandingFooter";
+
 
 export default function Home() {
   return (
@@ -17,7 +17,6 @@ export default function Home() {
       <WhatIsMarzi />
       <Testimonials />
       <CtaBanner />
-      <LandingFooter />
     </div>
   );
 }

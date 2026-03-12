@@ -48,7 +48,7 @@ export default function LandingFooter() {
             community isn&apos;t just a feature, it&apos;s the foundation.
           </p>
           <a
-            href="https://marzi.app/download"
+            href="https://play.google.com/store/apps/details?id=marzi.app&hl=en_IN"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-primary hover:bg-primary/90 text-white text-sm font-semibold px-8 py-3.5 rounded-full transition-colors"

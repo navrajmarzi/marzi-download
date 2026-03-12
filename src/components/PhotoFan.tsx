@@ -90,7 +90,7 @@ export default function PhotoFan() {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        className="text-center text-lg sm:text-2xl border w-max mx-auto border-primary text-primary mb-16 rounded-full px-2 font-[family-name:var(--font-playfair)]"
+        className="text-center text-lg sm:text-2xl border w-max mx-auto border-primary  py-1 px-3 text-primary mb-16 rounded-full font-[family-name:var(--font-playfair)]"
    
       >
         Moments with Marzi

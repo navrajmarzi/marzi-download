@@ -9,7 +9,7 @@ export default function Hero() {
     <section className="relative bg-white overflow-hidden h-[90vh] md:h-screen">
   
       <div
-        className="hidden md:block absolute -top-24 -right-24 w-60 h-60 sm:w-80 sm:h-80  bg-primary z-0"
+        className="hidden md:block absolute -top-16 -right-16 w-60 h-60 sm:w-60 sm:h-60  bg-primary z-0"
         style={{ clipPath: "circle(50% at 50% 50%)" }}
       />
 
@@ -40,46 +40,45 @@ export default function Hero() {
           className="relative z-20 max-w-xl space-y-4"
         >
           <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] text-gray-900 mb-8">
-            Active Aging{" "}
-            <br className="hidden sm:block" />
-            with{" "}
+            Some songs were{" "}
+           
+            never meant to be{" "}
+           
             <span className="italic font-[family-name:var(--font-playfair)]">
-              joy
-            </span>{" "}
-            and
-            <br />
-            <span className="italic font-[family-name:var(--font-playfair)]">
-              connections.
+              sung alone.
             </span>
           </h1>
 
           <p className="md:hidden max-w-2xl text-lg text-gray-500 leading-relaxed">
-            Marzi is designed for adults 55+ to live healthier, happier, and safer
-            lives. Customize your space to talk, play, and hang out with your
-            community.
+            Meet people who still remember the lyrics, the voices, and the magic
+            of songs that defined an era.
           </p>
 
-          <a
-            href="https://marzi.app/download"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-primary text-white text-base sm:text-lg px-8 py-4 sm:px-10 sm:py-5 rounded-full font-semibold hover:bg-primary/90 transition-colors"
-          >
-            Download the App
-          </a>
+          <div className="flex items-left w-max flex-col gap-4 flex-wrap">
+            <a
+              href="https://play.google.com/store/apps/details?id=marzi.app&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-primary text-white text-base sm:text-lg px-8 py-4 sm:px-10 sm:py-5 rounded-full font-semibold hover:bg-primary/90 transition-colors"
+            >
+              Download on Play Store
+            </a>
+            <p className="text-sm text-gray-600 font-semibold bg-white/60 rounded-full w-max px-1">
+              ⭐ 4.8 · 50K+ members
+            </p>
+          </div>
         </motion.div>
 
         {/* Group PNG + description */}
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-12">
           <img
             src={groupPng}
             alt="Happy seniors enjoying life together"
-            className="w-full h-full object-contain object-bottom z-20"
+            className="w-full h-full object-contain object-bottom z-20 absolute bottom-0 md:relative"
           />
-          <p className="hidden md:block max-w-2xl text-lg  text-white leading-relaxed mt-14">
-            Marzi is designed for adults 55+ to live healthier, happier, and safer
-            lives. Customize your space to talk, play, and hang out with your
-            community.
+          <p className="hidden md:block max-w-2xl text-lg text-white leading-relaxed mt-14 font-bold rounded-2xl p-4">
+            Meet people who still remember the lyrics, the voices, and the magic
+            of songs that defined an era.
           </p>
         </div>
       </div>

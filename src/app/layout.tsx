@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Lato, Montserrat, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
@@ -22,9 +23,9 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Marzi — Active Aging with Joy and Connections",
+  title: "Gen Evergreen Filmy Music Community in Bangalore | Marzi",
   description:
-    "India's first aging super app. Designed for adults 55+ to live healthier, happier, and safer lives.",
+    "Love classic filmy music? Join Bangalore's Gen Evergreen community on Marzi and meet people who enjoy timeless melodies, nostalgia, and conversations around old songs.",
 };
 
 export default function RootLayout({
@@ -34,9 +35,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script id="gtm" strategy="afterInteractive">
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-K4HZHN23');`}
+        </Script>
+      </head>
       <body
         className={`${lato.variable} ${montserrat.variable} ${playfair.variable} antialiased`}
       >
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-K4HZHN23"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
         {children}
       </body>
     </html>

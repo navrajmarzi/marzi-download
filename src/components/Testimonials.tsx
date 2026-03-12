@@ -8,37 +8,26 @@ interface Testimonial {
   image: string;
   quote: string;
   name: string;
-  age: number;
-  city: string;
 }
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop&crop=face",
+    image: "/manuel_anil_francis.jpg",
     quote:
-      "Marzi has completely changed my social life after retirement. I've made friends who share my love for gardening and morning walks. It feels like college days again!",
-    name: "Meera S",
-    age: 68,
-    city: "Bengaluru",
+      "The type of atmosphere and the crowd at Marzi events is mind blowing",
+    name: "Manuel Anil Francis",
   },
   {
-    image:
-      "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?w=400&h=500&fit=crop&crop=face",
+    image: "/preeta_bellari.jpg",
     quote:
-      "After my husband passed, I thought my social life was over. Marzi gave me a community that genuinely cares. The weekend meetups are the highlight of my week.",
-    name: "Sunita P",
-    age: 72,
-    city: "Mumbai",
+      "Marzi has given me a lot of friends and it makes me feel confident",
+    name: "Preetha Bellari",
   },
   {
-    image:
-      "https://images.unsplash.com/photo-1581579438747-104c8d46c4c3?w=400&h=500&fit=crop&crop=face",
+    image: "/usha_narendran.jpg",
     quote:
-      "The online sessions keep me mentally active every day. From poetry readings to health workshops — there's always something to look forward to.",
-    name: "Rajan K",
-    age: 65,
-    city: "Chennai",
+      "Marzi is really wonderful, we got a chance to interact with others.",
+    name: "Usha Narendran",
   },
 ];
 
@@ -63,9 +52,9 @@ export default function Testimonials() {
             transition={{ duration: 0.6 }}
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight font-[family-name:var(--font-playfair)]"
           >
-            About us,
+            Across Bangalore,
             <br />
-            in their words.
+            music lovers are meeting.
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
@@ -74,7 +63,7 @@ export default function Testimonials() {
             transition={{ delay: 0.2 }}
             className="text-sm text-gray-400"
           >
-            This is Marzi. Your life. Your terms.
+            Conversations begin with a song and end with a room full of people singing the same line.
           </motion.p>
         </div>
 
@@ -113,9 +102,8 @@ export default function Testimonials() {
               </blockquote>
 
               <p className="font-semibold text-primary text-base">
-                {t.name}, {t.age}
+                {t.name}
               </p>
-              <p className="text-sm text-gray-500">{t.city}</p>
             </div>
           </motion.div>
         </AnimatePresence>

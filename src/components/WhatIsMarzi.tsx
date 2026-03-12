@@ -26,9 +26,9 @@ export default function WhatIsMarzi() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-        className="text-center text-lg sm:text-2xl border w-max mx-auto border-primary text-primary mb-16 rounded-full px-2 font-[family-name:var(--font-playfair)]"
+        className="text-center text-lg sm:text-2xl border w-max mx-auto border-primary text-primary mb-16 rounded-full px-3 py-1 font-[family-name:var(--font-playfair)]"
         >
-          What is Marzi?
+          How it works
         </motion.p>
 
         <motion.h2
@@ -38,11 +38,10 @@ export default function WhatIsMarzi() {
           transition={{ duration: 0.6 }}
           className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-snug max-w-3xl mx-auto mb-14"
         >
-          Marzi is the super app that brings
+          On Marzi, people who grew up with these songs
           <br />
-          your{" "}
           <span className="italic font-[family-name:var(--font-playfair)]">
-            social life, health and hobbies back to life.
+            find each other through their shared love for filmy music.
           </span>
         </motion.h2>
 
@@ -58,14 +57,13 @@ export default function WhatIsMarzi() {
             <div className="absolute top-4 left-4 w-40 h-40 border border-pink-300/40 rounded-full pointer-events-none" />
             <div className="flex-1 relative z-10">
               <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-4">
-                Find Your Tribe
+                Meet Gen Evergreen
               </p>
               <p className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3">
-                1,500+
+                🎶
               </p>
               <p className="text-sm text-gray-600 leading-relaxed max-w-[220px]">
-                Connect with peers who share your exact passions, from gardening
-                to classic literature.
+                Lovers of classic Hindi film music — find your people.
               </p>
             </div>
             <div className="w-full sm:w-48 h-48 sm:h-auto rounded-2xl overflow-hidden flex-shrink-0">
@@ -126,21 +124,21 @@ export default function WhatIsMarzi() {
             <div className="bg-white rounded-3xl p-6 sm:p-8 flex-1">
               <div className="flex items-start justify-between mb-4">
                 <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Join Local Events
+                  Talk & Rediscover
                 </p>
                 <Share2 size={18} className="text-gray-400" />
               </div>
               <p className="text-4xl sm:text-5xl font-bold text-gray-900 mb-2">
-                10+ Events
+                🎤
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Every week step out for hobby clubs and coffee meet-ups.
+                Talk about songs, singers, and the stories behind them.
               </p>
             </div>
 
             <div className="bg-emerald-100 rounded-3xl p-6 sm:p-8 flex-1">
               <p className="text-sm text-gray-700 leading-relaxed mb-4">
-                Curated group holidays with medical support on standby.
+                📻 Rediscover melodies that never really left.
               </p>
               <div className="flex -space-x-2">
                 {HOLIDAY_AVATARS.map((src, i) => (

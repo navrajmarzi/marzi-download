@@ -2,8 +2,8 @@
 
 
 
-import { Instagram,  Linkedin } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Instagram, Linkedin } from "lucide-react";
+import Link from "next/link";
 
 const NAV_LINKS = [
   { label: "Meetups", href: "/meetups" },
@@ -20,39 +20,42 @@ const SOCIAL_LINKS = [
 
 
 const BG_IMAGE =
-  "/footer_wall.webp";
+  "/footer_wall_no_bg.png";
 
 export default function CtaBanner() {
   return (
-    <section className="relative w-full h-[600px] sm:h-[600px] overflow-hidden">
-      <img
-        src={BG_IMAGE}
-        alt=""
-        className="absolute inset-0 w-full h-full position-start "
-      />
-      <div className="absolute inset-0 bg-black/50" />
+    <section className="relative  bg-primary py-12 mt-24">
 
-      <div className="relative z-10 h-full flex flex-col justify-end items-center  px-6 sm:px-10 lg:px-20 pb-12 sm:pb-16 max-w-7xl mx-auto">
+      <img src={BG_IMAGE} alt="Background" className="h-[75%] bottom-[74%] md:h-[95%] absolute md:bottom-[65%] left-0 z-50" />
 
-        <h2 className="text-3xl text-center sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-6">
-          Active Ageing.
-          <br />
-          <span className="italic font-[family-name:var(--font-playfair)]">
-            Reimagined.
-          </span>
-        </h2>
+      <div className="max-w-5xl px-4 sm:px-2  z-10  flex flex-col justify-center items-end mx-auto space-y-10 mt-10">
 
-        <a
-          href="https://marzi.app/download"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block bg-primary mx-auto text-white text-base px-8 py-4 sm:px-10 sm:py-5 rounded-full font-semibold hover:bg-primary/90 transition-colors"
-        >
-          Download the App
-        </a>
-      </div>
+        <div className="text-right">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight font-[family-name:var(--font-playfair)]">
+            Music sounds better
+            <br />
+            when it&apos;s shared.
+          </h2>
+          <p className="text-white/80 text-lg mt-4">
+            Come, find the people who still enjoy singing old songs just like you do.
+          </p>
+        </div>
 
-         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+        <div className="flex flex-col items-end gap-2">
+          <a
+            href="https://play.google.com/store/apps/details?id=marzi.app&hl=en_IN"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-white ml-auto text-primary text-base px-8 py-4 sm:px-10 sm:py-5 rounded-full font-semibold hover:bg-white/90 transition-colors"
+          >
+            Download on Play Store
+          </a>
+          <p className="text-white/60 text-sm">
+            It&apos;s free to join · Takes 2 minutes
+          </p>
+        </div>
+
+        <div className="flex items-center gap-4 ml-auto text-white">
           <p>&copy; Marzi. All rights reserved</p>
 
           <div className="flex items-center gap-4">
@@ -63,22 +66,22 @@ export default function CtaBanner() {
               Terms
             </Link>
           </div>
-
-          <div className="flex items-center gap-4">
-            {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="text-gray-500 hover:text-white transition-colors"
-              >
-                <Icon size={16} />
-              </a>
-            ))}
-          </div>
+          {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              className="text-white transition-colors"
+            >
+              <Icon size={16} />
+            </a>
+          ))}
         </div>
+      </div>
+
+
     </section>
   );
 }
