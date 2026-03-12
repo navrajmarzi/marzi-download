@@ -55,6 +55,9 @@ export default function Hero() {
           </p>
 
           <div className="flex items-left w-max flex-col gap-4 flex-wrap">
+            <p className="text-sm text-gray-600 font-semibold rounded-full w-max px-1 ml-2">
+              ⭐ 4.8 · 50K+ members
+            </p>
             <a
               href="https://play.google.com/store/apps/details?id=marzi.app&hl=en_IN"
               target="_blank"
@@ -63,9 +66,7 @@ export default function Hero() {
             >
               Download on Play Store
             </a>
-            <p className="text-sm text-gray-600 font-semibold bg-white/60 rounded-full w-max px-1">
-              ⭐ 4.8 · 50K+ members
-            </p>
+          
           </div>
         </motion.div>
 
