@@ -7,7 +7,7 @@ const groupPng = "/group_of_people.webp";
 
 export default function Hero() {
   return (
-    <section className="relative bg-white overflow-hidden h-screen md:h-screen">
+    <section className="relative isolate bg-white overflow-hidden h-screen md:h-screen">
   
       <div
         className="hidden md:block absolute -top-16 -right-16 w-60 h-60 sm:w-60 sm:h-60  bg-primary z-0"

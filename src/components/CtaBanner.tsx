@@ -24,9 +24,9 @@ const BG_IMAGE =
 
 export default function CtaBanner() {
   return (
-    <section className="relative  bg-primary py-12 mt-24">
+    <section className="relative isolate bg-primary py-12 mt-24">
 
-      <img src={BG_IMAGE} alt="Background" className="h-[75%] bottom-[74%] md:h-[95%] absolute md:bottom-[65%] left-0 z-50 pointer-events-none" />
+      <img src={BG_IMAGE} alt="Background" className="h-full bottom-[56%] sm:bottom-[62%]  absolute md:bottom-[65%] left-0 z-50 pointer-events-none object-contain" />
 
       <div className="max-w-5xl px-4 sm:px-2  z-10  flex flex-col justify-center items-end mx-auto space-y-10 mt-10">
 
