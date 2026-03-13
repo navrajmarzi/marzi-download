@@ -3,19 +3,22 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
-import { TESTIMONIALS_SECTION } from "@/data/content";
+import type { LandingPageContent } from "@/lib/contentful";
 
-const { items } = TESTIMONIALS_SECTION;
-
-export default function Testimonials() {
+export default function TestimonialsDynamic({
+  data,
+}: {
+  data: LandingPageContent["testimonials"];
+}) {
   const [current, setCurrent] = useState(0);
 
   const prev = () =>
-    setCurrent((c) => (c === 0 ? items.length - 1 : c - 1));
+    setCurrent((c) => (c === 0 ? data.items.length - 1 : c - 1));
   const next = () =>
-    setCurrent((c) => (c === items.length - 1 ? 0 : c + 1));
+    setCurrent((c) => (c === data.items.length - 1 ? 0 : c + 1));
 
-  const t = items[current];
+  const t = data.items[current];
+  if (!t) return null;
 
   return (
     <section className="bg-white py-16 sm:py-24 px-6 sm:px-10 lg:px-20">
@@ -28,12 +31,9 @@ export default function Testimonials() {
             transition={{ duration: 0.6 }}
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight font-[family-name:var(--font-playfair)]"
           >
-            {TESTIMONIALS_SECTION.heading.split("\n").map((line, i) => (
-              <span key={i}>
-                {i > 0 && <br />}
-                {line}
-              </span>
-            ))}
+            Across Bangalore,
+            <br />
+            music lovers are meeting.
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
@@ -42,7 +42,8 @@ export default function Testimonials() {
             transition={{ delay: 0.2 }}
             className="text-sm text-gray-400"
           >
-            {TESTIMONIALS_SECTION.subtitle}
+            Conversations begin with a song and end with a room full of people
+            singing the same line.
           </motion.p>
         </div>
 
@@ -80,9 +81,7 @@ export default function Testimonials() {
                 &ldquo;{t.quote}&rdquo;
               </blockquote>
 
-              <p className="font-semibold text-primary text-base">
-                {t.name}
-              </p>
+              <p className="font-semibold text-primary text-base">{t.name}</p>
             </div>
           </motion.div>
         </AnimatePresence>

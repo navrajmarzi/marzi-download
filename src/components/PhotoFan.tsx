@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import { motion, useAnimationFrame } from "framer-motion";
+import { PHOTO_FAN } from "@/data/content";
 
-const NUM_IMAGES = 23;
+const NUM_IMAGES = PHOTO_FAN.totalImages;
 const ANGLE_STEP = 360 / NUM_IMAGES;
 const RADIUS = 700;
 const CARD_WIDTH = Math.ceil(2 * RADIUS * Math.tan(Math.PI / NUM_IMAGES)) - 20;
@@ -91,9 +92,9 @@ export default function PhotoFan() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         className="text-center text-lg sm:text-2xl border w-max mx-auto border-primary  py-1 px-3 text-primary mb-16 rounded-full font-[family-name:var(--font-playfair)]"
-   
+
       >
-        Moments with Marzi
+        {PHOTO_FAN.badge}
       </motion.p>
 
       <div

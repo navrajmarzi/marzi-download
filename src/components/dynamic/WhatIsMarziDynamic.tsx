@@ -2,21 +2,41 @@
 
 import { motion } from "framer-motion";
 import { Share2 } from "lucide-react";
-import { WHAT_IS_MARZI } from "@/data/content";
+import type { LandingPageContent } from "@/lib/contentful";
 
-const { cards } = WHAT_IS_MARZI;
+interface Cards {
+  findTribe: {
+    tag: string;
+    emoji: string;
+    description: string;
+    image: string;
+  };
+  joinEvents: { image: string; alt: string };
+  jabWeMet: { image: string; alt: string; label: string; labelAccent: string };
+  talkRediscover: { tag: string; emoji: string; description: string };
+  rediscoverMelodies: { text: string; avatars: string[] };
+}
 
-export default function WhatIsMarzi() {
+export default function WhatIsMarziDynamic({
+  data,
+}: {
+  data: LandingPageContent["whatIsMarzi"];
+}) {
+  const cards = data.cards as unknown as Cards;
+
   return (
-    <section id="offerings" className="bg-gray-50 py-16 sm:py-24 px-6 sm:px-10 lg:px-20">
+    <section
+      id="offerings"
+      className="bg-gray-50 py-16 sm:py-24 px-6 sm:px-10 lg:px-20"
+    >
       <div className="max-w-6xl mx-auto">
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-        className="text-center text-lg sm:text-2xl border w-max mx-auto border-primary text-primary mb-16 rounded-full px-3 py-1 font-[family-name:var(--font-playfair)]"
+          className="text-center text-lg sm:text-2xl border w-max mx-auto border-primary text-primary mb-16 rounded-full px-3 py-1 font-[family-name:var(--font-playfair)]"
         >
-          {WHAT_IS_MARZI.badge}
+          How it works
         </motion.p>
 
         <motion.h2
@@ -26,15 +46,14 @@ export default function WhatIsMarzi() {
           transition={{ duration: 0.6 }}
           className="text-center text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-snug max-w-3xl mx-auto mb-14"
         >
-          {WHAT_IS_MARZI.heading}
+          {data.heading}
           <br />
           <span className="italic font-[family-name:var(--font-playfair)]">
-            {WHAT_IS_MARZI.headingAccent}
+            {data.headingAccent}
           </span>
         </motion.h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Find Your Tribe */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -63,7 +82,6 @@ export default function WhatIsMarzi() {
             </div>
           </motion.div>
 
-          {/* Top right image */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -78,7 +96,6 @@ export default function WhatIsMarzi() {
             />
           </motion.div>
 
-          {/* Jab We Met Marzi */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -101,7 +118,6 @@ export default function WhatIsMarzi() {
             </div>
           </motion.div>
 
-          {/* Bottom right - stacked cards */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
