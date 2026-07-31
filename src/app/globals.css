@@ -20,6 +20,35 @@
 
   /* Animations */
   --animate-marquee: marquee 20s linear infinite;
+
+  /* Travel Mitr (Marzi Holidays) landing palette — warm editorial, marigold + plum */
+  --color-tm-cream: oklch(0.97 0.02 85); /* warm paper */
+  --color-tm-marigold: oklch(0.78 0.17 65); /* saffron/marigold */
+  --color-tm-coral: oklch(0.68 0.19 25); /* warm coral */
+  --color-tm-plum: oklch(0.28 0.09 340); /* deep berry */
+  --color-tm-forest: oklch(0.42 0.08 155); /* sage/forest */
+  --color-tm-ink: oklch(0.22 0.06 340); /* deep plum ink */
+  --color-tm-muted: oklch(0.45 0.05 340); /* muted plum text */
+  --color-tm-secondary: oklch(0.93 0.03 80); /* soft sand */
+  --color-tm-border: oklch(0.88 0.03 80); /* warm border */
+  --color-tm-destructive: oklch(0.58 0.22 27);
+}
+
+/* Travel Mitr landing utilities */
+@utility text-display {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+@utility bg-paper-grain {
+  background-color: var(--color-tm-cream);
+  background-image: radial-gradient(
+      circle at 20% 30%,
+      oklch(0.78 0.17 65 / 0.06) 0,
+      transparent 40%
+    ),
+    radial-gradient(circle at 80% 70%, oklch(0.28 0.09 340 / 0.05) 0, transparent 45%);
 }
 
 @keyframes marquee {
