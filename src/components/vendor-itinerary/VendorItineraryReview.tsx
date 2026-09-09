@@ -7,6 +7,7 @@ import VendorItineraryDocument from "./VendorItineraryDocument";
 import {
   VENDOR_ITINERARY_ENDPOINT,
   type CustomField,
+  type MealPlan,
   type PolicyItem,
   type VendorCustomSection,
   type VendorItineraryData,
@@ -36,6 +37,23 @@ const B = (v: unknown): boolean | null => (typeof v === "boolean" ? v : null);
 const strList = (v: unknown): string[] => arr<unknown>(v).map((x) => str(x));
 const customFields = (v: unknown): CustomField[] =>
   arr<unknown>(v).map((f) => ({ label: str(rec(f).label), value: str(rec(f).value) }));
+
+// Derive breakfast/lunch/dinner flags. Prefer the structured meal_plan the
+// backend now emits; fall back to parsing the free-text meals string / meal
+// codes so older records (and manual edits) still light up the right icons.
+function mealPlan(raw: unknown, mealsText: string): MealPlan {
+  const mp = rec(raw);
+  if ("breakfast" in mp || "lunch" in mp || "dinner" in mp) {
+    return { breakfast: mp.breakfast === true, lunch: mp.lunch === true, dinner: mp.dinner === true };
+  }
+  const t = mealsText.toLowerCase();
+  const code = (c: string) => new RegExp(`\\b${c}\\b`).test(t);
+  return {
+    breakfast: t.includes("breakfast") || code("cp") || code("map") || code("ap"),
+    lunch: t.includes("lunch") || code("ap"),
+    dinner: t.includes("dinner") || code("map") || code("ap"),
+  };
+}
 
 function normalizeSection(v: unknown): VendorCustomSection | null {
   const s = rec(v);
@@ -80,14 +98,18 @@ function normalize(raw: unknown): VendorItineraryData {
     },
     hotels: arr<unknown>(d.hotels).map((raw) => {
       const h = rec(raw);
+      const meals = S(h.meals);
       return {
         city: S(h.city), name: S(h.name), nights: N(h.nights),
-        meals: S(h.meals), room_type: S(h.room_type), custom_fields: customFields(h.custom_fields),
+        meals, room_type: S(h.room_type), room_size: S(h.room_size),
+        meal_plan: mealPlan(h.meal_plan, meals ?? ""),
+        google_rating: N(h.google_rating), tripadvisor_rating: N(h.tripadvisor_rating),
+        image_url: S(h.image_url), custom_fields: customFields(h.custom_fields),
       };
     }),
     transfers: arr<unknown>(d.transfers).map((raw) => {
       const t = rec(raw);
-      return { name: S(t.name), type: S(t.type), services: S(t.services) };
+      return { name: S(t.name), type: S(t.type), vehicle: S(t.vehicle), services: S(t.services) };
     }),
     flights: arr<unknown>(d.flights).map((raw) => {
       const f = rec(raw);
@@ -412,7 +434,7 @@ export default function VendorItineraryReview({ initial, uuid, refId, filename, 
 
       {/* 2 — Hotels / Transfers / Flights */}
       <SectionCard step={2} title="Hotels, Cabs & Flights" subtitle="Stay, transport and air segments"
-        action={<AddButton onClick={() => edit((d) => d.hotels.push({ city: null, name: null, nights: null, meals: null, room_type: null, custom_fields: [] }))}>Add hotel</AddButton>}
+        action={<AddButton onClick={() => edit((d) => d.hotels.push({ city: null, name: null, nights: null, meals: null, room_type: null, room_size: null, meal_plan: { breakfast: false, lunch: false, dinner: false }, google_rating: null, tripadvisor_rating: null, image_url: null, custom_fields: [] }))}>Add hotel</AddButton>}
       >
         <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Hotels</p>
         <div className="space-y-3">
@@ -424,7 +446,29 @@ export default function VendorItineraryReview({ initial, uuid, refId, filename, 
                 <TextInput label="Hotel name" value={str(h.name)} onChange={(v) => edit((d) => (d.hotels[i].name = v || null))} />
                 <TextInput label="Nights" value={str(h.nights)} onChange={(v) => edit((d) => (d.hotels[i].nights = v ? Number(v) : null))} />
                 <TextInput label="Meals" value={str(h.meals)} onChange={(v) => edit((d) => (d.hotels[i].meals = v || null))} />
-                <TextInput label="Room type" value={str(h.room_type)} className="sm:col-span-2" onChange={(v) => edit((d) => (d.hotels[i].room_type = v || null))} />
+                <TextInput label="Room type" value={str(h.room_type)} onChange={(v) => edit((d) => (d.hotels[i].room_type = v || null))} />
+                <TextInput label="Room size" value={str(h.room_size)} placeholder="e.g. 32 m² / 350 sq ft" onChange={(v) => edit((d) => (d.hotels[i].room_size = v || null))} />
+              </div>
+              <div className="mt-3">
+                <p className="text-xs font-medium text-gray-600 mb-1.5">Meals provided</p>
+                <div className="flex flex-wrap gap-4">
+                  {(["breakfast", "lunch", "dinner"] as const).map((m) => (
+                    <label key={m} className="inline-flex items-center gap-1.5 text-sm capitalize cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 accent-primary"
+                        checked={h.meal_plan[m]}
+                        onChange={(e) => edit((d) => (d.hotels[i].meal_plan[m] = e.target.checked))}
+                      />
+                      {m}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                <TextInput label="Google rating" value={str(h.google_rating)} placeholder="e.g. 4.5" onChange={(v) => edit((d) => (d.hotels[i].google_rating = v ? Number(v) : null))} />
+                <TextInput label="TripAdvisor rating" value={str(h.tripadvisor_rating)} placeholder="e.g. 4.0" onChange={(v) => edit((d) => (d.hotels[i].tripadvisor_rating = v ? Number(v) : null))} />
+                <TextInput label="Property image URL" value={str(h.image_url)} className="sm:col-span-2" placeholder="https://…" onChange={(v) => edit((d) => (d.hotels[i].image_url = v || null))} />
               </div>
             </div>
           ))}
@@ -433,15 +477,16 @@ export default function VendorItineraryReview({ initial, uuid, refId, filename, 
 
         <div className="flex items-center justify-between mt-5 mb-2">
           <p className="text-xs font-semibold text-gray-500 uppercase">Transfers / Cabs</p>
-          <AddButton onClick={() => edit((d) => d.transfers.push({ name: null, type: null, services: null }))}>Add transfer</AddButton>
+          <AddButton onClick={() => edit((d) => d.transfers.push({ name: null, type: null, vehicle: null, services: null }))}>Add transfer</AddButton>
         </div>
         <div className="space-y-3">
           {data.transfers.map((t, i) => (
             <div key={i} className="rounded-xl border border-gray-200 p-3">
               <div className="flex justify-end mb-1"><IconDelete onClick={() => edit((d) => d.transfers.splice(i, 1))} /></div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <TextInput label="Name" value={str(t.name)} onChange={(v) => edit((d) => (d.transfers[i].name = v || null))} />
-                <TextInput label="Type" value={str(t.type)} onChange={(v) => edit((d) => (d.transfers[i].type = v || null))} />
+                <TextInput label="Type of transport" value={str(t.type)} placeholder="e.g. Private Car, SIC Coach" onChange={(v) => edit((d) => (d.transfers[i].type = v || null))} />
+                <TextInput label="Vehicle / car" value={str(t.vehicle)} placeholder="e.g. Toyota Innova" onChange={(v) => edit((d) => (d.transfers[i].vehicle = v || null))} />
                 <TextInput label="Services" value={str(t.services)} onChange={(v) => edit((d) => (d.transfers[i].services = v || null))} />
               </div>
             </div>

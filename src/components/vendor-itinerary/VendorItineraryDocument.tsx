@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowLeft, Printer } from "lucide-react";
+import { ArrowLeft, Coffee, Moon, Printer, Star, UtensilsCrossed } from "lucide-react";
 import type {
   CustomField,
+  MealPlan,
   PolicyItem,
+  VendorHotel,
   VendorItineraryData,
 } from "@/data/vendorItinerary";
 
@@ -32,6 +34,36 @@ function CustomFieldRows({ fields }: { fields: CustomField[] }) {
         </div>
       ))}
     </>
+  );
+}
+
+function RatingBadge({ label, value }: { label: string; value: number | null }) {
+  if (value == null) return null;
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[9.5px] font-medium text-gray-700">
+      <Star size={10} className="fill-amber-400 text-amber-400" />
+      {value.toFixed(1)}
+      <span className="text-gray-400">{label}</span>
+    </span>
+  );
+}
+
+function MealIcons({ plan }: { plan: MealPlan }) {
+  const meals: [keyof MealPlan, string, React.ReactNode][] = [
+    ["breakfast", "Breakfast", <Coffee key="b" size={11} />],
+    ["lunch", "Lunch", <UtensilsCrossed key="l" size={11} />],
+    ["dinner", "Dinner", <Moon key="d" size={11} />],
+  ];
+  const on = meals.filter(([k]) => plan[k]);
+  if (on.length === 0) return null;
+  return (
+    <div className="mt-1 flex flex-wrap gap-1.5">
+      {on.map(([k, label, icon]) => (
+        <span key={k} className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[9.5px] font-medium text-white" style={{ background: PRI }}>
+          {icon} {label}
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -99,6 +131,40 @@ export default function VendorItineraryDocument({ data, refId, onBack }: Props) 
       </div>
 
       <article className="itin-report mx-auto my-6 max-w-[820px] bg-white text-gray-900 shadow-md print:my-0 print:shadow-none">
+        {/* Cover / welcome page */}
+        <div className="itin-cover relative overflow-hidden text-white" style={{ background: `linear-gradient(150deg, ${PRI} 0%, #5c1039 100%)` }}>
+          <div className="relative flex min-h-[380px] flex-col justify-between px-10 py-10 print:min-h-[247mm]">
+            <div className="flex items-center justify-between">
+              <Image src="/assets/marzi_crop.png" alt="Marzi" width={140} height={46} className="h-9 w-auto brightness-0 invert" priority />
+              <span className="text-[10px] uppercase tracking-[0.25em] opacity-70">Travel Desk</span>
+            </div>
+
+            <div className="py-8">
+              <p className="text-[11px] uppercase tracking-[0.3em] opacity-70">Your personalised itinerary</p>
+              <h1 className="mt-3 text-4xl font-bold leading-tight print:text-5xl">
+                {o.trip_name || o.destination || "Your Journey Awaits"}
+              </h1>
+              {(has(o.destination) || has(o.country)) && (
+                <p className="mt-2 text-lg opacity-90">{[o.destination, o.country].filter(has).join(", ")}</p>
+              )}
+              <div className="mt-6 h-px w-16 bg-white/40" />
+              <div className="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-[12px] opacity-90">
+                {has(o.duration) && <span><span className="opacity-60">Duration</span><br />{o.duration}</span>}
+                {has(datesLine) && <span><span className="opacity-60">Dates</span><br />{datesLine}</span>}
+                {has(paxLine) && <span><span className="opacity-60">Travellers</span><br />{paxLine}</span>}
+              </div>
+            </div>
+
+            <div className="flex items-end justify-between text-[10px] opacity-70">
+              <div>
+                <div className="text-[13px] font-bold opacity-100">Your Life. Your Terms.</div>
+                <div>Ref: MRZ-{refId.toString().padStart(6, "0")}</div>
+              </div>
+              <div className="text-right">www.marzi.life</div>
+            </div>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="px-8 pt-6 pb-5 text-white" style={{ background: PRI }}>
           <div className="flex items-start justify-between gap-4">
@@ -141,19 +207,7 @@ export default function VendorItineraryDocument({ data, refId, onBack }: Props) 
           {showHotels && (
             <Sec title="Hotel Details">
               {data.hotels.map((h, i) => (
-                <div key={i} className="mb-2.5 p-2.5 rounded border border-gray-200" style={{ pageBreakInside: "avoid" }}>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <strong className="text-[12px]">{h.name}</strong>
-                      <br />
-                      <span className="text-[10px] text-gray-500">
-                        {[h.city, h.nights != null ? `${h.nights}N` : "", h.meals].filter(has).join(" · ")}
-                      </span>
-                    </div>
-                  </div>
-                  {has(h.room_type) && <p className="text-[11px] text-gray-700 mt-1">{h.room_type}</p>}
-                  <div className="text-[11px]"><CustomFieldRows fields={h.custom_fields} /></div>
-                </div>
+                <HotelCard key={i} h={h} />
               ))}
             </Sec>
           )}
@@ -165,6 +219,7 @@ export default function VendorItineraryDocument({ data, refId, onBack }: Props) 
                 <div key={i} className="text-[11px] mb-0.5">
                   <strong>{t.name}</strong>
                   {has(t.type) && <span className="text-gray-500"> — {t.type}</span>}
+                  {has(t.vehicle) && <span className="text-gray-700"> · {t.vehicle}</span>}
                   {has(t.services) && <span className="text-gray-500 italic"> ({t.services})</span>}
                 </div>
               ))}
@@ -359,6 +414,7 @@ export default function VendorItineraryDocument({ data, refId, onBack }: Props) 
           body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
           html, body { background: #fff !important; }
           .no-print { display: none !important; }
+          .itin-cover { page-break-after: always; break-after: page; }
           .itin-report { box-shadow: none !important; margin: 0 !important; max-width: 100% !important; padding: 12mm 12mm 60px 12mm !important; }
           .itin-footer-screen { display: none !important; }
           .itin-footer-print {
@@ -373,6 +429,41 @@ export default function VendorItineraryDocument({ data, refId, onBack }: Props) 
           }
         }
       ` }} />
+    </div>
+  );
+}
+
+function HotelCard({ h }: { h: VendorHotel }) {
+  const meta = [h.city, h.nights != null ? `${h.nights}N` : "", h.meals].filter(has).join(" · ");
+  const roomLine = [h.room_type, h.room_size].filter(has).join(" · ");
+  const hasRatings = h.google_rating != null || h.tripadvisor_rating != null;
+  return (
+    <div className="mb-2.5 rounded border border-gray-200 overflow-hidden" style={{ pageBreakInside: "avoid" }}>
+      <div className="flex gap-3">
+        {has(h.image_url) && (
+          // Vendor/Google photo URLs are arbitrary hosts — use a plain <img> to
+          // skip next/image domain allow-listing for the print document.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={h.image_url as string} alt={h.name ?? "Hotel"} className="h-[72px] w-[96px] shrink-0 object-cover" />
+        )}
+        <div className="flex-1 p-2.5">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <strong className="text-[12px]">{h.name}</strong>
+              {has(meta) && <div className="text-[10px] text-gray-500">{meta}</div>}
+            </div>
+            {hasRatings && (
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                <RatingBadge label="Google" value={h.google_rating} />
+                <RatingBadge label="TripAdvisor" value={h.tripadvisor_rating} />
+              </div>
+            )}
+          </div>
+          {has(roomLine) && <p className="text-[11px] text-gray-700 mt-1">{roomLine}</p>}
+          <MealIcons plan={h.meal_plan} />
+          <div className="text-[11px]"><CustomFieldRows fields={h.custom_fields} /></div>
+        </div>
+      </div>
     </div>
   );
 }

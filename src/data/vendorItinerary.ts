@@ -37,18 +37,31 @@ export type VendorOverview = {
   custom_fields: CustomField[];
 };
 
+export type MealPlan = {
+  breakfast: boolean;
+  lunch: boolean;
+  dinner: boolean;
+};
+
 export type VendorHotel = {
   city: string | null;
   name: string | null;
   nights: number | null;
   meals: string | null;
   room_type: string | null;
+  room_size: string | null;
+  meal_plan: MealPlan;
+  // Enrichment — filled by the backend (Google Places + TripAdvisor), editable.
+  google_rating: number | null;
+  tripadvisor_rating: number | null;
+  image_url: string | null;
   custom_fields: CustomField[];
 };
 
 export type VendorTransfer = {
   name: string | null;
   type: string | null;
+  vehicle: string | null;
   services: string | null;
 };
 
