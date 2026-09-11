@@ -34,6 +34,14 @@ export type VendorOverview = {
     taxes_note: string | null;
   };
   about_destination: string | null;
+  // Short tour-type label, e.g. "Group Tour for Seniors" — shown as the badge
+  // on the cover, in every page header, and in the footer strip.
+  tour_label: string | null;
+  // "A Marzi highlight" callout used to fill sparse pages; both editable.
+  highlight_title: string | null;
+  highlight_text: string | null;
+  // Cover-page hero photo — an https URL or a data: URL from a manual upload.
+  cover_image_url: string | null;
   custom_fields: CustomField[];
 };
 
@@ -78,6 +86,10 @@ export type VendorFlight = {
   to_airport: string | null;
   stops: string | null;
   duration: string | null;
+  // Layover AFTER this leg (e.g. "3h 40m Layover in Hanoi (HAN)").
+  // When set, this flight and the next one render as one journey card
+  // with a "Change of planes" band between the legs.
+  layover: string | null;
   cabin: string | null;
   refundable: boolean | null;
   fare_note: string | null;
