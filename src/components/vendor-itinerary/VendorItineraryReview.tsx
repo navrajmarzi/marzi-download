@@ -94,6 +94,10 @@ function normalize(raw: unknown): VendorItineraryData {
         taxes_note: S(pricing.taxes_note),
       },
       about_destination: S(o.about_destination),
+      tour_label: S(o.tour_label),
+      highlight_title: S(o.highlight_title),
+      highlight_text: S(o.highlight_text),
+      cover_image_url: S(o.cover_image_url),
       custom_fields: customFields(o.custom_fields),
     },
     hotels: arr<unknown>(d.hotels).map((raw) => {
@@ -118,7 +122,8 @@ function normalize(raw: unknown): VendorItineraryData {
         from: S(f.from), to: S(f.to), date: S(f.date), airline: S(f.airline),
         flight_no: S(f.flight_no), aircraft: S(f.aircraft), depart: S(f.depart), arrive: S(f.arrive),
         from_airport: S(f.from_airport), to_airport: S(f.to_airport), stops: S(f.stops),
-        duration: S(f.duration), cabin: S(f.cabin), refundable: B(f.refundable), fare_note: S(f.fare_note),
+        duration: S(f.duration), layover: S(f.layover),
+        cabin: S(f.cabin), refundable: B(f.refundable), fare_note: S(f.fare_note),
         baggage: { cabin: S(bag.cabin), checkin: S(bag.checkin) },
       };
     }),
@@ -193,6 +198,94 @@ function TextInput({ label, value, onChange, placeholder, className = "" }: {
     <Labeled label={label} className={className}>
       <input className={INPUT} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
     </Labeled>
+  );
+}
+
+// Downscale an uploaded photo to a reasonably-sized JPEG data URL so the
+// saved itinerary JSON stays small (raw phone photos are 5-15 MB).
+const COVER_MAX_W = 1600;
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new window.Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, COVER_MAX_W / img.width);
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject(new Error("Canvas unavailable"));
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL("image/jpeg", 0.82));
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Could not read image"));
+    };
+    img.src = url;
+  });
+}
+
+function CoverImageField({ value, onChange }: { value: string | null; onChange: (v: string | null) => void }) {
+  const [error, setError] = useState<string | null>(null);
+  const isDataUrl = (value ?? "").startsWith("data:");
+
+  async function onFile(file: File | undefined) {
+    if (!file) return;
+    setError(null);
+    try {
+      onChange(await fileToDataUrl(file));
+    } catch {
+      setError("Could not read that image — try a JPG or PNG.");
+    }
+  }
+
+  return (
+    <div className="mt-3">
+      <span className="mb-1 block text-xs font-medium text-gray-600">
+        Destination cover image <span className="text-gray-400">(shown full-width on page 1)</span>
+      </span>
+      <div className="flex flex-wrap items-start gap-3">
+        {str(value) && (
+          // Cover may be a data: URL or an arbitrary external host — plain <img>
+          // skips next/image domain allow-listing.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={value as string} alt="Cover preview" className="h-24 w-40 rounded-lg border border-gray-200 object-cover" />
+        )}
+        <div className="flex-1 min-w-[220px] space-y-2">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <Plus size={16} /> {str(value) ? "Replace image" : "Upload image"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                void onFile(e.target.files?.[0]);
+                e.target.value = "";
+              }}
+            />
+          </label>
+          {str(value) && (
+            <button
+              type="button"
+              onClick={() => onChange(null)}
+              className="ml-2 inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+            >
+              <Trash2 size={14} /> Remove
+            </button>
+          )}
+          <input
+            className={INPUT}
+            placeholder="…or paste an image URL (https://…)"
+            value={isDataUrl ? "" : str(value)}
+            onChange={(e) => onChange(e.target.value || null)}
+          />
+          {isDataUrl && <p className="text-[11px] text-gray-400">Using uploaded image. Pasting a URL above will replace it.</p>}
+          {error && <p className="text-[11px] text-red-600">{error}</p>}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -410,6 +503,7 @@ export default function VendorItineraryReview({ initial, uuid, refId, filename, 
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <TextInput label="Trip name" value={str(o.trip_name)} onChange={(v) => edit((d) => (d.overview.trip_name = v || null))} />
+          <TextInput label="Tour label (badge on every page)" value={str(o.tour_label)} placeholder="e.g. Group Tour for Seniors" onChange={(v) => edit((d) => (d.overview.tour_label = v || null))} />
           <TextInput label="Country" value={str(o.country)} onChange={(v) => edit((d) => (d.overview.country = v || null))} />
           <TextInput label="Destination" value={str(o.destination)} onChange={(v) => edit((d) => (d.overview.destination = v || null))} />
           <TextInput label="Departure city" value={str(o.departure_city)} onChange={(v) => edit((d) => (d.overview.departure_city = v || null))} />
@@ -427,6 +521,22 @@ export default function VendorItineraryReview({ initial, uuid, refId, filename, 
         <Labeled label="About the destination" className="mt-3">
           <textarea className={TEXTAREA} value={str(o.about_destination)} onChange={(e) => edit((d) => (d.overview.about_destination = e.target.value || null))} />
         </Labeled>
+        <div className="grid grid-cols-1 gap-3 mt-3">
+          <TextInput label="Marzi highlight — title" value={str(o.highlight_title)} placeholder="Your Marzi Group Tour Manager" onChange={(v) => edit((d) => (d.overview.highlight_title = v || null))} />
+          <Labeled label="Marzi highlight — text (shown in the callout box on pages with free space)">
+            <textarea
+              className={TEXTAREA}
+              value={str(o.highlight_text)}
+              placeholder="A Marzi group tour manager from India will travel with the group and personally take care of all travellers throughout the trip. The tour manager speaks English and Hindi."
+              onChange={(e) => edit((d) => (d.overview.highlight_text = e.target.value || null))}
+            />
+          </Labeled>
+        </div>
+        <CoverImageField
+          value={o.cover_image_url}
+          onChange={(v) => edit((d) => (d.overview.cover_image_url = v))}
+        />
+
         {o.custom_fields.length > 0 && (
           <CustomFieldsEditor items={o.custom_fields} onChange={(next) => edit((d) => (d.overview.custom_fields = next))} />
         )}
@@ -496,7 +606,7 @@ export default function VendorItineraryReview({ initial, uuid, refId, filename, 
 
         <div className="flex items-center justify-between mt-5 mb-2">
           <p className="text-xs font-semibold text-gray-500 uppercase">Flights</p>
-          <AddButton onClick={() => edit((d) => d.flights.push({ from: null, to: null, date: null, airline: null, flight_no: null, aircraft: null, depart: null, arrive: null, from_airport: null, to_airport: null, stops: null, duration: null, cabin: null, refundable: null, fare_note: null, baggage: { cabin: null, checkin: null } }))}>Add flight</AddButton>
+          <AddButton onClick={() => edit((d) => d.flights.push({ from: null, to: null, date: null, airline: null, flight_no: null, aircraft: null, depart: null, arrive: null, from_airport: null, to_airport: null, stops: null, duration: null, layover: null, cabin: null, refundable: null, fare_note: null, baggage: { cabin: null, checkin: null } }))}>Add flight</AddButton>
         </div>
         <div className="space-y-3">
           {data.flights.map((f, i) => (
@@ -518,6 +628,13 @@ export default function VendorItineraryReview({ initial, uuid, refId, filename, 
                 <TextInput label="Cabin baggage" value={str(f.baggage.cabin)} onChange={(v) => edit((d) => (d.flights[i].baggage.cabin = v || null))} />
                 <TextInput label="Check-in baggage" value={str(f.baggage.checkin)} onChange={(v) => edit((d) => (d.flights[i].baggage.checkin = v || null))} />
                 <TextInput label="Fare note" value={str(f.fare_note)} className="sm:col-span-2" onChange={(v) => edit((d) => (d.flights[i].fare_note = v || null))} />
+                <TextInput
+                  label="Layover after this flight (joins it with the next flight into one journey)"
+                  value={str(f.layover)}
+                  placeholder="e.g. 3h 40m Layover in Hanoi (HAN)"
+                  className="sm:col-span-2"
+                  onChange={(v) => edit((d) => (d.flights[i].layover = v || null))}
+                />
               </div>
             </div>
           ))}
