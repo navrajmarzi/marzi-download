@@ -615,6 +615,8 @@ export default function VendorItineraryReview({ initial, uuid, refId, filename, 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <TextInput label="From" value={str(f.from)} onChange={(v) => edit((d) => (d.flights[i].from = v || null))} />
                 <TextInput label="To" value={str(f.to)} onChange={(v) => edit((d) => (d.flights[i].to = v || null))} />
+                <TextInput label="Departure airport" value={str(f.from_airport)} placeholder="e.g. Kempegowda International Airport (BLR)" onChange={(v) => edit((d) => (d.flights[i].from_airport = v || null))} />
+                <TextInput label="Arrival airport" value={str(f.to_airport)} placeholder="e.g. Noi Bai International Airport (HAN)" onChange={(v) => edit((d) => (d.flights[i].to_airport = v || null))} />
                 <TextInput label="Date" value={str(f.date)} placeholder="YYYY-MM-DD" onChange={(v) => edit((d) => (d.flights[i].date = v || null))} />
                 <TextInput label="Airline" value={str(f.airline)} onChange={(v) => edit((d) => (d.flights[i].airline = v || null))} />
                 <TextInput label="Flight no." value={str(f.flight_no)} onChange={(v) => edit((d) => (d.flights[i].flight_no = v || null))} />
